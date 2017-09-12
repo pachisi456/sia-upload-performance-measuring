@@ -1,6 +1,7 @@
 package gateway
 
 import (
+	"context"
 	"errors"
 	"io"
 	"io/ioutil"
@@ -55,8 +56,17 @@ func (g *Gateway) threadedLearnHostname() {
 	}
 
 	// try UPnP first, then fallback to myexternalip.com
+	ctx, cancel := context.WithCancel(context.Background())
+	defer cancel()
+	go func() {
+		select {
+		case <-g.threads.StopChan():
+			cancel()
+		case <-ctx.Done():
+		}
+	}()
 	var host string
-	d, err := upnp.Discover()
+	d, err := upnp.DiscoverCtx(ctx)
 	if err == nil {
 		host, err = d.ExternalIP()
 	}
@@ -94,7 +104,16 @@ func (g *Gateway) threadedForwardPort(port string) {
 		return
 	}
 
-	d, err := upnp.Discover()
+	ctx, cancel := context.WithCancel(context.Background())
+	defer cancel()
+	go func() {
+		select {
+		case <-g.threads.StopChan():
+			cancel()
+		case <-ctx.Done():
+		}
+	}()
+	d, err := upnp.DiscoverCtx(ctx)
 	if err != nil {
 		g.log.Printf("WARN: could not automatically forward port %s: no UPnP-enabled devices found: %v", port, err)
 		return
@@ -121,7 +140,16 @@ func (g *Gateway) managedClearPort(port string) {
 		return
 	}
 
-	d, err := upnp.Discover()
+	ctx, cancel := context.WithCancel(context.Background())
+	defer cancel()
+	go func() {
+		select {
+		case <-g.threads.StopChan():
+			cancel()
+		case <-ctx.Done():
+		}
+	}()
+	d, err := upnp.DiscoverCtx(ctx)
 	if err != nil {
 		return
 	}
