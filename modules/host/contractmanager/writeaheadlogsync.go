@@ -202,10 +202,12 @@ func (wal *writeAheadLog) commit() {
 		}
 
 		// Append all of the remaining long running uncommitted changes to the WAL.
-		wal.appendChange(stateChange{
-			UnfinishedStorageFolderAdditions:  unfinishedAdditions,
-			UnfinishedStorageFolderExtensions: unfinishedExtensions,
-		})
+		if len(unfinishedAdditions)+len(unfinishedExtensions) > 0 {
+			wal.appendChange(stateChange{
+				UnfinishedStorageFolderAdditions:  unfinishedAdditions,
+				UnfinishedStorageFolderExtensions: unfinishedExtensions,
+			})
+		}
 	}()
 	wg.Wait()
 }
@@ -273,7 +275,14 @@ func (wal *writeAheadLog) threadedSyncLoop(threadsStopped chan struct{}, syncLoo
 			// Commit all of the changes in the WAL to disk, and then apply the
 			// changes.
 			wal.mu.Lock()
-			wal.commit()
+			if len(wal.uncommittedChanges) > 0 {
+				// Only commit if there is something to commit.
+				wal.commit()
+			} else {
+				// Otherwise, just strobe syncChan.
+				close(wal.syncChan)
+				wal.syncChan = make(chan struct{})
+			}
 			wal.mu.Unlock()
 		}
 	}
