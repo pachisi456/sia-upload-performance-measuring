@@ -2,6 +2,8 @@ package renter
 
 import (
 	"time"
+
+	"github.com/NebulousLabs/errors"
 )
 
 // dropChunk will remove a worker from the responsibility of tracking a chunk.
@@ -17,10 +19,12 @@ func (w *worker) dropChunk(uc *unfinishedChunk) {
 // received.
 func (w *worker) dropUploadChunks() {
 	for i := 0; i < len(w.unprocessedChunks); i++ {
+		w.renter.Debugln("\tworker disabling, dropping:", w.unprocessedChunks[i].index, "::", w.unprocessedChunks[i].renterFile.name)
 		w.dropChunk(w.unprocessedChunks[i])
 	}
 	w.unprocessedChunks = w.unprocessedChunks[:0]
 	for i := 0; i < len(w.standbyChunks); i++ {
+		w.renter.Debugln("\tworker disabling, dropping:", w.standbyChunks[i].index, "::", w.standbyChunks[i].renterFile.name)
 		w.dropChunk(w.standbyChunks[i])
 	}
 	w.standbyChunks = w.standbyChunks[:0]
@@ -74,6 +78,15 @@ func (w *worker) processChunk(uc *unfinishedChunk) (nextChunk *unfinishedChunk, 
 	needsHelp := uc.piecesNeeded > uc.piecesCompleted+uc.piecesRegistered
 
 	// If the chunk does not need help from this worker, release the chunk.
+	if chunkComplete {
+		w.renter.Debugln("worker is dropping because chunk_complete:", uc.index, "::", uc.renterFile.name)
+	}
+	if !candidateHost {
+		w.renter.Debugln("worker is dropping because not_candidate_host:", uc.index, "::", uc.renterFile.name)
+	}
+	if !w.contract.GoodForUpload {
+		w.renter.Debugln("worker is dropping because not_good_for_renew:", uc.index, "::", uc.renterFile.name)
+	}
 	if chunkComplete || !candidateHost || !w.contract.GoodForUpload {
 		// This worker no longer needs to track this chunk.
 		uc.mu.Unlock()
@@ -117,6 +130,18 @@ func (w *worker) managedQueueChunkRepair(uc *unfinishedChunk) {
 		requiredCooldown *= 2
 	}
 	onCooldown := time.Now().Before(w.uploadRecentFailure.Add(requiredCooldown))
+	if !exists {
+		w.renter.Debugln("worker is dropping because contract_not_exists:", uc.index, "::", uc.renterFile.name)
+	}
+	if !contract.GoodForUpload {
+		w.renter.Debugln("worker is dropping because contract_not_good_for_upload:", uc.index, "::", uc.renterFile.name)
+	}
+	if w.terminated {
+		w.renter.Debugln("worker is dropping because worker_terminated:", uc.index, "::", uc.renterFile.name)
+	}
+	if onCooldown {
+		w.renter.Debugln("worker is dropping because worker_on_cooldown:", w.uploadConsecutiveFailures, uc.index, "::", uc.renterFile.name)
+	}
 	if !exists || !contract.GoodForUpload || w.terminated || onCooldown {
 		// The worker should not be uploading, remove the chunk.
 		w.dropChunk(uc)
@@ -135,15 +160,17 @@ func (w *worker) managedQueueChunkRepair(uc *unfinishedChunk) {
 
 // uploadFailed is called if a worker failed to upload part of an unfinished
 // chunk.
-func (w *worker) uploadFailed(uc *unfinishedChunk, pieceIndex uint64) {
+func (w *worker) uploadFailed(uc *unfinishedChunk, pieceIndex uint64, err error) {
 	w.uploadRecentFailure = time.Now()
 	w.uploadConsecutiveFailures++
 	uc.mu.Lock()
 	uc.piecesRegistered--
 	uc.pieceUsage[pieceIndex] = false
 	uc.mu.Unlock()
+	w.renter.Debugln("worker is dropping because UPLOAD_FAILED:", uc.index, "::", uc.renterFile.name, "::", err.Error())
 	w.dropChunk(uc)
 	w.dropUploadChunks()
+	w.renter.log.Println("A worker upload failed:", err)
 }
 
 // managedUpload will perform some upload work.
@@ -151,8 +178,8 @@ func (w *worker) managedUpload(uc *unfinishedChunk, pieceIndex uint64) {
 	// Open an editing connection to the host.
 	e, err := w.renter.hostContractor.Editor(w.contract.ID, w.renter.tg.StopChan())
 	if err != nil {
-		w.renter.log.Debugln("Worker failed to acquire an editor:", err)
-		w.uploadFailed(uc, pieceIndex)
+		err = errors.Extend(err, errors.New("worker failed to acquire an editor"))
+		w.uploadFailed(uc, pieceIndex, err)
 		return
 	}
 	defer e.Close()
@@ -161,8 +188,8 @@ func (w *worker) managedUpload(uc *unfinishedChunk, pieceIndex uint64) {
 	// the upload attempt.
 	root, err := e.Upload(uc.physicalChunkData[pieceIndex])
 	if err != nil {
-		w.renter.log.Debugln("Worker failed to upload via the editor:", err)
-		w.uploadFailed(uc, pieceIndex)
+		err = errors.Extend(err, errors.New("worker failed to upload via the editor"))
+		w.uploadFailed(uc, pieceIndex, err)
 		return
 	}
 	w.mu.Lock()
@@ -202,5 +229,6 @@ func (w *worker) managedUpload(uc *unfinishedChunk, pieceIndex uint64) {
 	uc.memoryReleased += uint64(releaseSize)
 	uc.mu.Unlock()
 	w.renter.managedMemoryAvailableAdd(uint64(releaseSize))
+	w.renter.Debugln("worker is finished because UPLOAD_COMPLETED:", uc.index, "::", uc.renterFile.name)
 	w.dropChunk(uc)
 }
