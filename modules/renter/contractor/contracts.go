@@ -641,6 +641,26 @@ func (c *Contractor) threadedContractMaintenance() {
 	c.mu.RUnlock()
 	hosts := c.hdb.RandomHosts(neededContracts*2+10, exclude)
 
+	// filter the hosts according to our host whitelist.
+	if len(c.allowance.HostWhitelist) > 0 {
+		var filteredHosts []modules.HostDBEntry
+		c.mu.RLock()
+		for _, dbe := range hosts {
+			hasEntry := false
+			for _, allowedKey := range c.allowance.HostWhitelist {
+				if allowedKey.String() == dbe.PublicKey.String() {
+					hasEntry = true
+					break
+				}
+			}
+			if hasEntry {
+				filteredHosts = append(filteredHosts, dbe)
+			}
+		}
+		c.mu.RUnlock()
+		hosts = filteredHosts
+	}
+
 	// Form contracts with the hosts one at a time, until we have enough
 	// contracts.
 	for _, host := range hosts {

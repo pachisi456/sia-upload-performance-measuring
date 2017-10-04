@@ -7,6 +7,7 @@ import (
 	"time"
 
 	"github.com/NebulousLabs/Sia/build"
+	"github.com/NebulousLabs/Sia/crypto"
 	"github.com/NebulousLabs/Sia/modules"
 	"github.com/NebulousLabs/Sia/types"
 )
@@ -372,6 +373,99 @@ func TestAllowanceSpending(t *testing.T) {
 	expectedMinSpending := testAllowance.Funds.Sub(refreshCost)
 	if spent.Cmp(expectedMinSpending) < 0 {
 		t.Fatal("contractor spent to little money: spent", spent.HumanString(), "expected at least:", expectedMinSpending.HumanString())
+	}
+}
+
+// TestAllowanceHostWhitelist verifies that the contractor respects the
+// `HostWhitelist` parameter of the allowance.
+func TestAllowanceHostWhitelist(t *testing.T) {
+	if testing.Short() {
+		t.SkipNow()
+	}
+	t.Parallel()
+
+	// create testing trio
+	h, c, _, err := newTestingTrio(t.Name())
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	// an empty host whitelist should mean the contractor contracts with the
+	// host.
+	testAllowance := modules.Allowance{
+		Funds:         types.SiacoinPrecision.Mul64(6000),
+		RenewWindow:   100,
+		Hosts:         1,
+		Period:        200,
+		HostWhitelist: []types.SiaPublicKey{},
+	}
+	err = c.SetAllowance(testAllowance)
+	if err != nil {
+		t.Fatal(err)
+	}
+	err = build.Retry(50, 100*time.Millisecond, func() error {
+		if len(c.Contracts()) != 1 {
+			return errors.New("could not form contract with empty host whitelist")
+		}
+		return nil
+	})
+	if err != nil {
+		t.Error(err)
+	}
+	err = c.SetAllowance(modules.Allowance{})
+	if err != nil {
+		t.Fatal(err)
+	}
+	err = build.Retry(50, 100*time.Millisecond, func() error {
+		if len(c.Contracts()) != 0 {
+			return errors.New("allowance did not cancel")
+		}
+		return nil
+	})
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	// a whitelist that only has a nonexistent host should result in no
+	// contracts.
+	_, pk := crypto.GenerateKeyPair()
+	testAllowance.HostWhitelist = []types.SiaPublicKey{types.Ed25519PublicKey(pk)}
+	err = c.SetAllowance(testAllowance)
+	if err != nil {
+		t.Fatal(err)
+	}
+	time.Sleep(time.Second * 5)
+	if len(c.Contracts()) != 0 {
+		t.Fatal("contractor ignored host whitelist")
+	}
+	err = c.SetAllowance(modules.Allowance{})
+	if err != nil {
+		t.Fatal(err)
+	}
+	err = build.Retry(50, 100*time.Millisecond, func() error {
+		if len(c.Contracts()) != 0 {
+			return errors.New("allowance did not cancel")
+		}
+		return nil
+	})
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	// a whitelist that has our host should result in contracts
+	testAllowance.HostWhitelist = append(testAllowance.HostWhitelist, h.PublicKey())
+	err = c.SetAllowance(testAllowance)
+	if err != nil {
+		t.Fatal(err)
+	}
+	err = build.Retry(50, 100*time.Millisecond, func() error {
+		if len(c.Contracts()) != 1 {
+			return errors.New("could not form contract with empty host whitelist")
+		}
+		return nil
+	})
+	if err != nil {
+		t.Error(err)
 	}
 }
 
