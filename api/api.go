@@ -5,8 +5,8 @@ import (
 	"net/http"
 	"strings"
 
-	"github.com/NebulousLabs/Sia/build"
-	"github.com/NebulousLabs/Sia/modules"
+	"github.com/pachisi456/Sia/build"
+	"github.com/pachisi456/Sia/modules"
 )
 
 // Error is a type that is encoded as JSON and returned in an API response in
