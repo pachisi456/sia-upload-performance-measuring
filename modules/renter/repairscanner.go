@@ -337,6 +337,10 @@ func (r *Renter) threadedRepairScan() {
 		// received, we start over with the outer loop that rebuilds the heap
 		// and re-checks the health of all the files.
 		rebuildHeapSignal := time.After(rebuildChunkHeapInterval)
+		
+		chProcessingStarted := false // bool for measuring performance
+		var chProcessingStart time.Time
+		
 	LOOP:
 		for {
 			// Return if the renter has shut down.
@@ -347,8 +351,19 @@ func (r *Renter) threadedRepairScan() {
 			}
 
 			if chunkHeap.Len() > 0 {
+				// measuring performance
+				chProcessingStart := time.Now()
+				fmt.Println("PROCESSING OF CHUNKS STARTED AT.", chProcessingStart)
+				chProcessingStarted = true
+
 				r.managedPrepareNextChunk(chunkHeap, hosts)
 			} else {
+				// measuring performance
+				if chProcessingStarted && (chunkHeap.Len() == 0) {
+					fmt.Println("PROCESSING OF CHUNKS TOOK", time.Since(chProcessingStart))
+					chProcessingStarted = false
+				}
+				
 				// Block until the rebuild signal is received.
 				select {
 				case newFile := <-r.newUploads:
