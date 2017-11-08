@@ -3,8 +3,8 @@ package contractor
 import (
 	"time"
 
-	"github.com/NebulousLabs/Sia/build"
-	"github.com/NebulousLabs/Sia/types"
+	"github.com/pachisi456/Sia/build"
+	"github.com/pachisi456/Sia/types"
 )
 
 // uptimeMinScans is the minimum number of scans required to judge whether a

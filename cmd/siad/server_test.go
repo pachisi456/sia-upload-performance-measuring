@@ -7,8 +7,8 @@ import (
 	"testing"
 	"time"
 
-	"github.com/NebulousLabs/Sia/api"
-	"github.com/NebulousLabs/Sia/build"
+	"github.com/pachisi456/Sia/api"
+	"github.com/pachisi456/Sia/build"
 )
 
 // TestLatestRelease tests that the latestRelease function properly processes a

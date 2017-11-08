@@ -6,17 +6,17 @@ import (
 	"path/filepath"
 	"testing"
 
-	"github.com/NebulousLabs/Sia/build"
-	"github.com/NebulousLabs/Sia/crypto"
-	"github.com/NebulousLabs/Sia/modules"
-	"github.com/NebulousLabs/Sia/modules/consensus"
-	"github.com/NebulousLabs/Sia/modules/gateway"
-	"github.com/NebulousLabs/Sia/modules/miner"
-	// "github.com/NebulousLabs/Sia/modules/renter"
-	"github.com/NebulousLabs/Sia/modules/transactionpool"
-	"github.com/NebulousLabs/Sia/modules/wallet"
-	siasync "github.com/NebulousLabs/Sia/sync"
-	"github.com/NebulousLabs/Sia/types"
+	"github.com/pachisi456/Sia/build"
+	"github.com/pachisi456/Sia/crypto"
+	"github.com/pachisi456/Sia/modules"
+	"github.com/pachisi456/Sia/modules/consensus"
+	"github.com/pachisi456/Sia/modules/gateway"
+	"github.com/pachisi456/Sia/modules/miner"
+	// "github.com/pachisi456/Sia/modules/renter"
+	"github.com/pachisi456/Sia/modules/transactionpool"
+	"github.com/pachisi456/Sia/modules/wallet"
+	siasync "github.com/pachisi456/Sia/sync"
+	"github.com/pachisi456/Sia/types"
 )
 
 // A hostTester is the helper object for host testing, including helper modules

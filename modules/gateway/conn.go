@@ -4,7 +4,7 @@ import (
 	"net"
 	"time"
 
-	"github.com/NebulousLabs/Sia/modules"
+	"github.com/pachisi456/Sia/modules"
 )
 
 // peerConn is a simple type that implements the modules.PeerConn interface.

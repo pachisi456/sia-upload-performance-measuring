@@ -3,7 +3,7 @@ package contractmanager
 import (
 	"sync/atomic"
 
-	"github.com/NebulousLabs/Sia/modules"
+	"github.com/pachisi456/Sia/modules"
 )
 
 type (

@@ -4,8 +4,8 @@ import (
 	"bytes"
 	"sort"
 
-	"github.com/NebulousLabs/Sia/modules"
-	"github.com/NebulousLabs/Sia/types"
+	"github.com/pachisi456/Sia/modules"
+	"github.com/pachisi456/Sia/types"
 )
 
 // findSets takes a bunch of transactions (presumably from a block) and finds

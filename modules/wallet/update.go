@@ -4,8 +4,8 @@ import (
 	"fmt"
 	"math"
 
-	"github.com/NebulousLabs/Sia/modules"
-	"github.com/NebulousLabs/Sia/types"
+	"github.com/pachisi456/Sia/modules"
+	"github.com/pachisi456/Sia/types"
 
 	"github.com/NebulousLabs/bolt"
 )

@@ -8,9 +8,9 @@ package host
 import (
 	"testing"
 
-	"github.com/NebulousLabs/Sia/crypto"
-	"github.com/NebulousLabs/Sia/modules"
-	"github.com/NebulousLabs/Sia/types"
+	"github.com/pachisi456/Sia/crypto"
+	"github.com/pachisi456/Sia/modules"
+	"github.com/pachisi456/Sia/types"
 	"github.com/NebulousLabs/fastrand"
 
 	"github.com/NebulousLabs/bolt"

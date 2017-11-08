@@ -8,7 +8,7 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/NebulousLabs/Sia/modules"
+	"github.com/pachisi456/Sia/modules"
 )
 
 // countFileLines is a helper function that will count the number of lines in a

@@ -4,8 +4,8 @@ import (
 	"net"
 	"time"
 
-	"github.com/NebulousLabs/Sia/modules"
-	"github.com/NebulousLabs/Sia/persist"
+	"github.com/pachisi456/Sia/modules"
+	"github.com/pachisi456/Sia/persist"
 )
 
 // These interfaces define the HostDB's dependencies. Using the smallest

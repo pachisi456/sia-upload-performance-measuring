@@ -5,7 +5,7 @@ import (
 	"errors"
 	"io"
 
-	"github.com/NebulousLabs/Sia/encoding"
+	"github.com/pachisi456/Sia/encoding"
 	"github.com/NebulousLabs/fastrand"
 
 	"golang.org/x/crypto/ed25519"

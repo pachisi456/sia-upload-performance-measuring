@@ -6,7 +6,7 @@ import (
 	"net"
 	"os"
 
-	"github.com/NebulousLabs/Sia/persist"
+	"github.com/pachisi456/Sia/persist"
 	"github.com/NebulousLabs/fastrand"
 )
 

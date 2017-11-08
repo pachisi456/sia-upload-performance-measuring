@@ -8,8 +8,8 @@ import (
 	"path/filepath"
 	"sync"
 
-	"github.com/NebulousLabs/Sia/build"
-	"github.com/NebulousLabs/Sia/persist"
+	"github.com/pachisi456/Sia/build"
+	"github.com/pachisi456/Sia/persist"
 )
 
 type (

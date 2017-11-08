@@ -9,19 +9,19 @@ import (
 	"testing"
 	"time"
 
-	"github.com/NebulousLabs/Sia/build"
-	"github.com/NebulousLabs/Sia/crypto"
-	"github.com/NebulousLabs/Sia/encoding"
-	"github.com/NebulousLabs/Sia/modules"
-	"github.com/NebulousLabs/Sia/modules/consensus"
-	"github.com/NebulousLabs/Sia/modules/gateway"
-	"github.com/NebulousLabs/Sia/modules/host"
-	"github.com/NebulousLabs/Sia/modules/miner"
-	"github.com/NebulousLabs/Sia/modules/renter/hostdb"
-	"github.com/NebulousLabs/Sia/modules/renter/proto"
-	"github.com/NebulousLabs/Sia/modules/transactionpool"
-	modWallet "github.com/NebulousLabs/Sia/modules/wallet"
-	"github.com/NebulousLabs/Sia/types"
+	"github.com/pachisi456/Sia/build"
+	"github.com/pachisi456/Sia/crypto"
+	"github.com/pachisi456/Sia/encoding"
+	"github.com/pachisi456/Sia/modules"
+	"github.com/pachisi456/Sia/modules/consensus"
+	"github.com/pachisi456/Sia/modules/gateway"
+	"github.com/pachisi456/Sia/modules/host"
+	"github.com/pachisi456/Sia/modules/miner"
+	"github.com/pachisi456/Sia/modules/renter/hostdb"
+	"github.com/pachisi456/Sia/modules/renter/proto"
+	"github.com/pachisi456/Sia/modules/transactionpool"
+	modWallet "github.com/pachisi456/Sia/modules/wallet"
+	"github.com/pachisi456/Sia/types"
 	"github.com/NebulousLabs/fastrand"
 )
 
@@ -1035,7 +1035,7 @@ func TestIntegrationCachedRenew(t *testing.T) {
 
 // TestContractPresenceLeak tests that a renter can not tell from the response
 // of the host to RPCs if the host has the contract if the renter doesn't
-// own this contract. See https://github.com/NebulousLabs/Sia/issues/2327.
+// own this contract. See https://github.com/pachisi456/Sia/issues/2327.
 func TestContractPresenceLeak(t *testing.T) {
 	if testing.Short() {
 		t.SkipNow()

@@ -3,10 +3,10 @@ package contractor
 import (
 	"path/filepath"
 
-	"github.com/NebulousLabs/Sia/crypto"
-	"github.com/NebulousLabs/Sia/modules"
-	"github.com/NebulousLabs/Sia/persist"
-	"github.com/NebulousLabs/Sia/types"
+	"github.com/pachisi456/Sia/crypto"
+	"github.com/pachisi456/Sia/modules"
+	"github.com/pachisi456/Sia/persist"
+	"github.com/pachisi456/Sia/types"
 )
 
 // contractorPersist defines what Contractor data persists across sessions.

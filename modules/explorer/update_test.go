@@ -3,8 +3,8 @@ package explorer
 import (
 	"testing"
 
-	"github.com/NebulousLabs/Sia/modules"
-	"github.com/NebulousLabs/Sia/types"
+	"github.com/pachisi456/Sia/modules"
+	"github.com/pachisi456/Sia/types"
 )
 
 func (et *explorerTester) currentFacts() (facts modules.BlockFacts, exists bool) {

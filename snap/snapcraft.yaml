@@ -24,7 +24,7 @@ parts:
   sia:
     source: .
     plugin: go
-    go-importpath: github.com/NebulousLabs/Sia
+    go-importpath: github.com/pachisi456/Sia
     after: [go]
   go:
     source-tag: go1.8

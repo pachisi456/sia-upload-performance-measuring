@@ -7,7 +7,7 @@ import (
 
 	"github.com/spf13/cobra"
 
-	"github.com/NebulousLabs/Sia/api"
+	"github.com/pachisi456/Sia/api"
 )
 
 var (

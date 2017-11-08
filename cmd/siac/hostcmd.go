@@ -8,9 +8,9 @@ import (
 	"strings"
 	"text/tabwriter"
 
-	"github.com/NebulousLabs/Sia/api"
-	"github.com/NebulousLabs/Sia/modules"
-	"github.com/NebulousLabs/Sia/types"
+	"github.com/pachisi456/Sia/api"
+	"github.com/pachisi456/Sia/modules"
+	"github.com/pachisi456/Sia/types"
 
 	"github.com/spf13/cobra"
 )

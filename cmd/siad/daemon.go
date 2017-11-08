@@ -9,10 +9,10 @@ import (
 	"strings"
 	"time"
 
-	"github.com/NebulousLabs/Sia/build"
-	"github.com/NebulousLabs/Sia/crypto"
-	"github.com/NebulousLabs/Sia/modules"
-	"github.com/NebulousLabs/Sia/profile"
+	"github.com/pachisi456/Sia/build"
+	"github.com/pachisi456/Sia/crypto"
+	"github.com/pachisi456/Sia/modules"
+	"github.com/pachisi456/Sia/profile"
 	mnemonics "github.com/NebulousLabs/entropy-mnemonics"
 
 	"github.com/spf13/cobra"

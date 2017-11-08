@@ -1,10 +1,10 @@
 package consensus
 
 import (
-	"github.com/NebulousLabs/Sia/build"
-	"github.com/NebulousLabs/Sia/modules"
+	"github.com/pachisi456/Sia/build"
+	"github.com/pachisi456/Sia/modules"
 
-	siasync "github.com/NebulousLabs/Sia/sync"
+	siasync "github.com/pachisi456/Sia/sync"
 	"github.com/NebulousLabs/bolt"
 )
 

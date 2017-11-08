@@ -20,25 +20,25 @@ import (
 	"sync"
 	"time"
 
-	"github.com/NebulousLabs/Sia/api"
-	"github.com/NebulousLabs/Sia/build"
-	"github.com/NebulousLabs/Sia/modules"
-	"github.com/NebulousLabs/Sia/modules/consensus"
-	"github.com/NebulousLabs/Sia/modules/explorer"
-	"github.com/NebulousLabs/Sia/modules/gateway"
-	"github.com/NebulousLabs/Sia/modules/host"
-	"github.com/NebulousLabs/Sia/modules/miner"
-	"github.com/NebulousLabs/Sia/modules/renter"
-	"github.com/NebulousLabs/Sia/modules/transactionpool"
-	"github.com/NebulousLabs/Sia/modules/wallet"
-	"github.com/NebulousLabs/Sia/types"
+	"github.com/pachisi456/Sia/api"
+	"github.com/pachisi456/Sia/build"
+	"github.com/pachisi456/Sia/modules"
+	"github.com/pachisi456/Sia/modules/consensus"
+	"github.com/pachisi456/Sia/modules/explorer"
+	"github.com/pachisi456/Sia/modules/gateway"
+	"github.com/pachisi456/Sia/modules/host"
+	"github.com/pachisi456/Sia/modules/miner"
+	"github.com/pachisi456/Sia/modules/renter"
+	"github.com/pachisi456/Sia/modules/transactionpool"
+	"github.com/pachisi456/Sia/modules/wallet"
+	"github.com/pachisi456/Sia/types"
 
 	"github.com/inconshreveable/go-update"
 	"github.com/julienschmidt/httprouter"
 	"github.com/kardianos/osext"
 )
 
-var errEmptyUpdateResponse = errors.New("API call to https://api.github.com/repos/NebulousLabs/Sia/releases/latest is returning an empty response")
+var errEmptyUpdateResponse = errors.New("API call to https://api.github.com/repos/pachisi456/Sia/releases/latest is returning an empty response")
 
 type (
 	// Server creates and serves a HTTP server that offers communication with a
@@ -175,7 +175,7 @@ func latestRelease(releases []githubRelease) (githubRelease, error) {
 // fetchLatestRelease returns metadata about the most recent non-LTS GitHub
 // release.
 func fetchLatestRelease() (githubRelease, error) {
-	req, err := http.NewRequest("GET", "https://api.github.com/repos/NebulousLabs/Sia/releases", nil)
+	req, err := http.NewRequest("GET", "https://api.github.com/repos/pachisi456/Sia/releases", nil)
 	if err != nil {
 		return githubRelease{}, err
 	}

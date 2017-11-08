@@ -5,10 +5,10 @@ import (
 	"errors"
 	"fmt"
 
-	"github.com/NebulousLabs/Sia/build"
-	"github.com/NebulousLabs/Sia/crypto"
-	"github.com/NebulousLabs/Sia/encoding"
-	"github.com/NebulousLabs/Sia/types"
+	"github.com/pachisi456/Sia/build"
+	"github.com/pachisi456/Sia/crypto"
+	"github.com/pachisi456/Sia/encoding"
+	"github.com/pachisi456/Sia/types"
 	"github.com/NebulousLabs/fastrand"
 
 	"github.com/NebulousLabs/bolt"

@@ -7,7 +7,7 @@ import (
 	"os"
 	"sync"
 
-	"github.com/NebulousLabs/Sia/build"
+	"github.com/pachisi456/Sia/build"
 )
 
 // Logger is a wrapper for the standard library logger that enforces logging

@@ -3,7 +3,7 @@ package wallet
 import (
 	"testing"
 
-	"github.com/NebulousLabs/Sia/types"
+	"github.com/pachisi456/Sia/types"
 )
 
 // TestIntegrationTransactions checks that the transaction history is being
