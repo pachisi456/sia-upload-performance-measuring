@@ -21,6 +21,7 @@ package renter
 import (
 	"container/heap"
 	"sync"
+	"fmt"
 	"time"
 
 	"github.com/pachisi456/Sia/crypto"
@@ -89,6 +90,10 @@ func (ch *chunkHeap) Pop() interface{} {
 // the HostPubKey instead of the FileContractID, and can be simplified even
 // further once the layout is per-chunk instead of per-filecontract.
 func (r *Renter) buildUnfinishedChunks(f *file, hosts map[string]struct{}) []*unfinishedChunk {
+	// measuring performance
+	splittingStart := time.Now()
+	fmt.Println("SPLITTING OF FILES INTO 40 MB PIECES STARTED AT.", splittingStart)
+
 	// Files are not threadsafe.
 	f.mu.Lock()
 	defer f.mu.Unlock()
@@ -131,6 +136,10 @@ func (r *Renter) buildUnfinishedChunks(f *file, hosts map[string]struct{}) []*un
 			newUnfinishedChunks[i].unusedHosts[host] = struct{}{}
 		}
 	}
+
+	// measuring performance
+	elapsed := time.Since(splittingStart)
+	fmt.Println("SPLITTING OF FILES INTO 40 MB CHUNKS TOOK", elapsed)
 
 	// Iterate through the contracts of the file and mark which hosts are
 	// already in use for the chunk. As you delete hosts from the 'unusedHosts'
