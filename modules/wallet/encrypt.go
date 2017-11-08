@@ -564,6 +564,7 @@ func (w *Wallet) Unlock(masterKey crypto.TwofishKey) error {
 	// unsafe because it would theoretically be possible for another function
 	// to Unlock the wallet in the short interval after Close calls w.Lock
 	// and before Close calls w.mu.Lock.
+	fmt.Println("TESTTESTTESTTESTTESTTESTTESTTESTTESTTESTTESTTESTTESTTEST")
 	if err := w.tg.Add(); err != nil {
 		return err
 	}
