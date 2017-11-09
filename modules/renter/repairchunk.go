@@ -88,7 +88,7 @@ func (r *Renter) managedFetchAndRepairChunk(chunk *unfinishedChunk) bool {
 
 	// measuring performance
 	rsStart := time.Now()
-	fmt.Println("REED-SOLOMON ERASURE CODING OF A CHUNK STARTED AT:", rsStart)
+	fmt.Println("REED-SOLOMON ERASURE CODING OF A CHUNK STARTED AT", rsStart)
 
 	// Create the physical pieces for the data. Immediately release the logical
 	// data.
@@ -106,7 +106,7 @@ func (r *Renter) managedFetchAndRepairChunk(chunk *unfinishedChunk) bool {
 
 	// measuring performance
 	rsElapsed := time.Since(rsStart)
-	fmt.Println("REED-SOLOMON ERASURE CODING OF A CHUNK TOOK:", rsElapsed)
+	fmt.Println("REED-SOLOMON ERASURE CODING OF A CHUNK TOOK", rsElapsed)
 
 	// Sanity check - we should have at least as many physical data pieces as we
 	// do elements in our piece usage.
@@ -117,7 +117,7 @@ func (r *Renter) managedFetchAndRepairChunk(chunk *unfinishedChunk) bool {
 
 	// measuring performance
 	tfStart := time.Now()
-	fmt.Println("TWOFISH ENCRYPTION OF A CHUNK STARTED AT:", tfStart)
+	fmt.Println("TWOFISH ENCRYPTION OF A CHUNK STARTED AT", tfStart)
 
 	// Loop through the pieces and encrypt any that our needed, while dropping
 	// any pieces that are not needed.
@@ -134,7 +134,7 @@ func (r *Renter) managedFetchAndRepairChunk(chunk *unfinishedChunk) bool {
 
 	// measuring performance
 	tfElapsed := time.Since(tfStart)
-	fmt.Println("REED-SOLOMON ERASURE CODING OF A CHUNK TOOK:", tfElapsed)
+	fmt.Println("TWOFISH ENCRYPTION OF A CHUNK TOOK", tfElapsed)
 
 	// Return the released memory.
 	r.managedMemoryAvailableAdd(memoryFreed)

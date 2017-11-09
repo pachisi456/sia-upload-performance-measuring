@@ -90,10 +90,6 @@ func (ch *chunkHeap) Pop() interface{} {
 // the HostPubKey instead of the FileContractID, and can be simplified even
 // further once the layout is per-chunk instead of per-filecontract.
 func (r *Renter) buildUnfinishedChunks(f *file, hosts map[string]struct{}) []*unfinishedChunk {
-	// measuring performance
-	splittingStart := time.Now()
-	fmt.Println("SPLITTING OF FILES INTO 40 MB PIECES STARTED AT.", splittingStart)
-
 	// Files are not threadsafe.
 	f.mu.Lock()
 	defer f.mu.Unlock()
@@ -111,6 +107,16 @@ func (r *Renter) buildUnfinishedChunks(f *file, hosts map[string]struct{}) []*un
 	// and the fact that chunks are going to be different sizes.
 	chunkCount := f.numChunks()
 	newUnfinishedChunks := make([]*unfinishedChunk, chunkCount)
+
+	// measuring performance
+	var splitting bool
+	var splittingStart time.Time
+	if chunkCount > 0 {
+		splittingStart = time.Now()
+		fmt.Println("SPLITTING OF FILES INTO 40 MB PIECES STARTED AT", splittingStart)
+		splitting = true
+	}
+
 	for i := uint64(0); i < chunkCount; i++ {
 		newUnfinishedChunks[i] = &unfinishedChunk{
 			renterFile: f,
@@ -138,8 +144,10 @@ func (r *Renter) buildUnfinishedChunks(f *file, hosts map[string]struct{}) []*un
 	}
 
 	// measuring performance
-	elapsed := time.Since(splittingStart)
-	fmt.Println("SPLITTING OF FILES INTO 40 MB CHUNKS TOOK", elapsed)
+	if splitting {
+		elapsed := time.Since(splittingStart)
+		fmt.Println("SPLITTING OF FILES INTO 40 MB CHUNKS TOOK", elapsed)
+	}
 
 	// Iterate through the contracts of the file and mark which hosts are
 	// already in use for the chunk. As you delete hosts from the 'unusedHosts'
@@ -315,6 +323,9 @@ func (r *Renter) threadedRepairScan() {
 	}
 	defer r.tg.Done()
 
+	chProcessingStarted := false // bool for measuring performance
+	var chProcessingStart time.Time
+
 	for {
 		// Return if the renter has shut down.
 		select {
@@ -337,10 +348,7 @@ func (r *Renter) threadedRepairScan() {
 		// received, we start over with the outer loop that rebuilds the heap
 		// and re-checks the health of all the files.
 		rebuildHeapSignal := time.After(rebuildChunkHeapInterval)
-		
-		chProcessingStarted := false // bool for measuring performance
-		var chProcessingStart time.Time
-		
+
 	LOOP:
 		for {
 			// Return if the renter has shut down.
@@ -352,9 +360,11 @@ func (r *Renter) threadedRepairScan() {
 
 			if chunkHeap.Len() > 0 {
 				// measuring performance
-				chProcessingStart := time.Now()
-				fmt.Println("PROCESSING OF CHUNKS STARTED AT.", chProcessingStart)
-				chProcessingStarted = true
+				if !chProcessingStarted {
+					chProcessingStart = time.Now()
+					fmt.Println("PROCESSING OF CHUNKS STARTED AT", chProcessingStart)
+					chProcessingStarted = true
+				}
 
 				r.managedPrepareNextChunk(chunkHeap, hosts)
 			} else {
