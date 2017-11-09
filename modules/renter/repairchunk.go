@@ -3,6 +3,8 @@ package renter
 import (
 	"io"
 	"os"
+	"time"
+	"fmt"
 
 	"github.com/pachisi456/Sia/crypto"
 
@@ -84,6 +86,10 @@ func (r *Renter) managedFetchAndRepairChunk(chunk *unfinishedChunk) bool {
 		return false
 	}
 
+	// measuring performance
+	rsStart := time.Now()
+	fmt.Println("REED-SOLOMON ERASURE CODING OF A CHUNK STARTED AT:", rsStart)
+
 	// Create the physical pieces for the data. Immediately release the logical
 	// data.
 	chunk.physicalChunkData, err = chunk.renterFile.erasureCode.Encode(chunk.logicalChunkData)
@@ -98,12 +104,21 @@ func (r *Renter) managedFetchAndRepairChunk(chunk *unfinishedChunk) bool {
 		return false
 	}
 
+	// measuring performance
+	rsElapsed := time.Since(rsStart)
+	fmt.Println("REED-SOLOMON ERASURE CODING OF A CHUNK TOOK:", rsElapsed)
+
 	// Sanity check - we should have at least as many physical data pieces as we
 	// do elements in our piece usage.
 	if len(chunk.physicalChunkData) < len(chunk.pieceUsage) {
 		r.log.Critical("not enough physical pieces to match the upload settings of the file")
 		return false
 	}
+
+	// measuring performance
+	tfStart := time.Now()
+	fmt.Println("TWOFISH ENCRYPTION OF A CHUNK STARTED AT:", tfStart)
+
 	// Loop through the pieces and encrypt any that our needed, while dropping
 	// any pieces that are not needed.
 	for i := 0; i < len(chunk.pieceUsage); i++ {
@@ -116,6 +131,11 @@ func (r *Renter) managedFetchAndRepairChunk(chunk *unfinishedChunk) bool {
 			chunk.physicalChunkData[i] = key.EncryptBytes(chunk.physicalChunkData[i])
 		}
 	}
+
+	// measuring performance
+	tfElapsed := time.Since(tfStart)
+	fmt.Println("REED-SOLOMON ERASURE CODING OF A CHUNK TOOK:", tfElapsed)
+
 	// Return the released memory.
 	r.managedMemoryAvailableAdd(memoryFreed)
 	chunk.memoryReleased += memoryFreed
