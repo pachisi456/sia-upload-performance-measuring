@@ -135,7 +135,7 @@ func (r *Renter) managedFetchAndRepairChunk(chunk *unfinishedChunk) bool {
 			chunk.physicalChunkData[i] = key.EncryptBytes(chunk.physicalChunkData[i])
 
 			// measuring performance
-			singleTfElapsed := time.Since(tfStart)
+			singleTfElapsed := time.Since(singleTfStart)
 			fmt.Println("TWOFISH ENCRYPTION OF A PIECE TOOK", singleTfElapsed)
 		}
 	}
