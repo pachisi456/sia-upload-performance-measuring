@@ -126,9 +126,17 @@ func (r *Renter) managedFetchAndRepairChunk(chunk *unfinishedChunk) bool {
 			memoryFreed += uint64(len(chunk.physicalChunkData[i]) + crypto.TwofishOverhead)
 			chunk.physicalChunkData[i] = nil
 		} else {
+			// measuring performance
+			singleTfStart := time.Now()
+			fmt.Println("TWOFISH ENCRYPTION OF A CHUNK STARTED AT", singleTfStart)
+
 			// Encrypt the piece.
 			key := deriveKey(chunk.renterFile.masterKey, chunk.index, uint64(i))
 			chunk.physicalChunkData[i] = key.EncryptBytes(chunk.physicalChunkData[i])
+
+			// measuring performance
+			singleTfElapsed := time.Since(tfStart)
+			fmt.Println("TWOFISH ENCRYPTION OF A CHUNK TOOK", singleTfElapsed)
 		}
 	}
 
