@@ -128,7 +128,7 @@ func (r *Renter) managedFetchAndRepairChunk(chunk *unfinishedChunk) bool {
 		} else {
 			// measuring performance
 			singleTfStart := time.Now()
-			fmt.Println("TWOFISH ENCRYPTION OF A CHUNK STARTED AT", singleTfStart)
+			fmt.Println("TWOFISH ENCRYPTION OF A PIECE STARTED AT", singleTfStart)
 
 			// Encrypt the piece.
 			key := deriveKey(chunk.renterFile.masterKey, chunk.index, uint64(i))
@@ -136,7 +136,7 @@ func (r *Renter) managedFetchAndRepairChunk(chunk *unfinishedChunk) bool {
 
 			// measuring performance
 			singleTfElapsed := time.Since(tfStart)
-			fmt.Println("TWOFISH ENCRYPTION OF A CHUNK TOOK", singleTfElapsed)
+			fmt.Println("TWOFISH ENCRYPTION OF A PIECE TOOK", singleTfElapsed)
 		}
 	}
 
