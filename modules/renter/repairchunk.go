@@ -88,10 +88,7 @@ func (r *Renter) managedFetchAndRepairChunk(chunk *unfinishedChunk) bool {
 
 	// measuring performance
 	chProcessingStart = time.Now()
-	fmt.Println("PROCESSING OF A CHUNK STARTED AT", chProcessingStart)
-
-	// measuring performance
-	rsStart := time.Now()
+	//fmt.Println("PROCESSING OF A CHUNK STARTED AT", chProcessingStart)
 	//fmt.Println("> REED-SOLOMON ERASURE CODING OF A CHUNK STARTED AT", rsStart)
 
 	// Create the physical pieces for the data. Immediately release the logical
@@ -109,7 +106,7 @@ func (r *Renter) managedFetchAndRepairChunk(chunk *unfinishedChunk) bool {
 	}
 
 	// measuring performance
-	rsElapsed := time.Since(rsStart)
+	rsElapsed := time.Since(chProcessingStart)
 	fmt.Println("> REED-SOLOMON ERASURE CODING OF A CHUNK TOOK", rsElapsed)
 
 	// Sanity check - we should have at least as many physical data pieces as we
@@ -120,7 +117,6 @@ func (r *Renter) managedFetchAndRepairChunk(chunk *unfinishedChunk) bool {
 	}
 
 	// measuring performance
-	tfStart := time.Now()
 	//fmt.Println("> TWOFISH ENCRYPTION OF A CHUNK STARTED AT", tfStart)
 	var totalTwofishTime time.Duration
 
@@ -147,12 +143,10 @@ func (r *Renter) managedFetchAndRepairChunk(chunk *unfinishedChunk) bool {
 	}
 
 	// measuring performance
-	tfElapsed := time.Since(tfStart)
-	fmt.Println("> TWOFISH ENCRYPTION OF A CHUNK TOOK", tfElapsed)
-	fmt.Println("> ONLY TWOFISH ENCRYPTION OF A CHUNK TOOK IN TOTAL", totalTwofishTime)
+	fmt.Println("> TWOFISH ENCRYPTION OF ALL PIECES OF A CHUNK TOOK", totalTwofishTime)
 
 	// measuring performance
-	fmt.Println("PROCESSING OF A CHUNK TOOK", time.Since(chProcessingStart))
+	fmt.Println("PROCESSING OF A CHUNK (REED-SOLOMON + TWOFISH) TOOK", time.Since(chProcessingStart))
 	chProcessingStarted = false
 
 	// Return the released memory.
