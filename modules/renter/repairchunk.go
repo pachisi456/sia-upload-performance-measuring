@@ -87,8 +87,12 @@ func (r *Renter) managedFetchAndRepairChunk(chunk *unfinishedChunk) bool {
 	}
 
 	// measuring performance
+	chProcessingStart = time.Now()
+	fmt.Println("PROCESSING OF A CHUNK STARTED AT", chProcessingStart)
+
+	// measuring performance
 	rsStart := time.Now()
-	fmt.Println("REED-SOLOMON ERASURE CODING OF A CHUNK STARTED AT", rsStart)
+	//fmt.Println("> REED-SOLOMON ERASURE CODING OF A CHUNK STARTED AT", rsStart)
 
 	// Create the physical pieces for the data. Immediately release the logical
 	// data.
@@ -106,7 +110,7 @@ func (r *Renter) managedFetchAndRepairChunk(chunk *unfinishedChunk) bool {
 
 	// measuring performance
 	rsElapsed := time.Since(rsStart)
-	fmt.Println("REED-SOLOMON ERASURE CODING OF A CHUNK TOOK", rsElapsed)
+	fmt.Println("> REED-SOLOMON ERASURE CODING OF A CHUNK TOOK", rsElapsed)
 
 	// Sanity check - we should have at least as many physical data pieces as we
 	// do elements in our piece usage.
@@ -117,7 +121,8 @@ func (r *Renter) managedFetchAndRepairChunk(chunk *unfinishedChunk) bool {
 
 	// measuring performance
 	tfStart := time.Now()
-	fmt.Println("TWOFISH ENCRYPTION OF A CHUNK STARTED AT", tfStart)
+	//fmt.Println("> TWOFISH ENCRYPTION OF A CHUNK STARTED AT", tfStart)
+	var totalTwofishTime time.Duration
 
 	// Loop through the pieces and encrypt any that our needed, while dropping
 	// any pieces that are not needed.
@@ -128,7 +133,7 @@ func (r *Renter) managedFetchAndRepairChunk(chunk *unfinishedChunk) bool {
 		} else {
 			// measuring performance
 			singleTfStart := time.Now()
-			fmt.Println("TWOFISH ENCRYPTION OF A PIECE STARTED AT", singleTfStart)
+			//fmt.Println(">> TWOFISH ENCRYPTION OF A PIECE STARTED AT", singleTfStart)
 
 			// Encrypt the piece.
 			key := deriveKey(chunk.renterFile.masterKey, chunk.index, uint64(i))
@@ -136,13 +141,19 @@ func (r *Renter) managedFetchAndRepairChunk(chunk *unfinishedChunk) bool {
 
 			// measuring performance
 			singleTfElapsed := time.Since(singleTfStart)
-			fmt.Println("TWOFISH ENCRYPTION OF A PIECE TOOK", singleTfElapsed)
+			fmt.Println(">> TWOFISH ENCRYPTION OF A PIECE TOOK", singleTfElapsed)
+			totalTwofishTime += singleTfElapsed
 		}
 	}
 
 	// measuring performance
 	tfElapsed := time.Since(tfStart)
-	fmt.Println("TWOFISH ENCRYPTION OF A CHUNK TOOK", tfElapsed)
+	fmt.Println("> TWOFISH ENCRYPTION OF A CHUNK TOOK", tfElapsed)
+	fmt.Println("> ONLY TWOFISH ENCRYPTION OF A CHUNK TOOK IN TOTAL", totalTwofishTime)
+
+	// measuring performance
+	fmt.Println("PROCESSING OF A CHUNK TOOK", time.Since(chProcessingStart))
+	chProcessingStarted = false
 
 	// Return the released memory.
 	r.managedMemoryAvailableAdd(memoryFreed)
