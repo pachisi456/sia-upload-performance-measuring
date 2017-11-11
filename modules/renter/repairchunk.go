@@ -137,7 +137,7 @@ func (r *Renter) managedFetchAndRepairChunk(chunk *unfinishedChunk) bool {
 
 			// measuring performance
 			singleTfElapsed := time.Since(singleTfStart)
-			fmt.Println(">> TWOFISH ENCRYPTION OF A PIECE TOOK", singleTfElapsed)
+			//fmt.Println(">> TWOFISH ENCRYPTION OF A PIECE TOOK", singleTfElapsed)
 			totalTwofishTime += singleTfElapsed
 		}
 	}
