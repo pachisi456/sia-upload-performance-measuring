@@ -9,6 +9,9 @@ import (
 	"github.com/pachisi456/Sia/crypto"
 
 	"github.com/NebulousLabs/errors"
+	"bytes"
+	"strconv"
+	runtime "runtime"
 )
 
 // managedDistributeChunkToWorkers will take a chunk with fully prepared
@@ -107,7 +110,7 @@ func (r *Renter) managedFetchAndRepairChunk(chunk *unfinishedChunk) bool {
 
 	// measuring performance
 	rsElapsed := time.Since(chProcessingStart)
-	fmt.Println("> REED-SOLOMON ERASURE CODING OF A CHUNK TOOK", rsElapsed)
+	fmt.Println("> REED-SOLOMON ERASURE CODING OF A CHUNK TOOK", getGID(), rsElapsed)
 
 	// Sanity check - we should have at least as many physical data pieces as we
 	// do elements in our piece usage.
@@ -237,4 +240,13 @@ func (r *Renter) managedReleaseIdleChunkPieces(uc *unfinishedChunk) {
 	if memoryReleased > 0 {
 		r.managedMemoryAvailableAdd(uint64(memoryReleased))
 	}
+}
+
+func getGID() uint64 {
+	b := make([]byte, 64)
+	b = b[:runtime.Stack(b, false)]
+	b = bytes.TrimPrefix(b, []byte("goroutine "))
+	b = b[:bytes.IndexByte(b, ' ')]
+	n, _ := strconv.ParseUint(string(b), 10, 64)
+	return n
 }
