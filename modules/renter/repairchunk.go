@@ -87,7 +87,7 @@ func (r *Renter) managedFetchAndRepairChunk(chunk *unfinishedChunk) bool {
 	}
 
 	// measuring performance
-	chProcessingStart = time.Now()
+	chProcessingStart := time.Now()
 	//fmt.Println("PROCESSING OF A CHUNK STARTED AT", chProcessingStart)
 	//fmt.Println("> REED-SOLOMON ERASURE CODING OF A CHUNK STARTED AT", rsStart)
 
@@ -148,7 +148,6 @@ func (r *Renter) managedFetchAndRepairChunk(chunk *unfinishedChunk) bool {
 	// measuring performance
 	chElapsed := time.Since(chProcessingStart)
 	fmt.Println("PROCESSING OF A CHUNK (REED-SOLOMON + TWOFISH) TOOK", chElapsed)
-	chProcessingStarted = false
 
 	// Return the released memory.
 	r.managedMemoryAvailableAdd(memoryFreed)

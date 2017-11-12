@@ -308,9 +308,6 @@ func (r *Renter) managedRefreshHostsAndWorkers() map[string]struct{} {
 	return hosts
 }
 
-var chProcessingStarted bool // bool for measuring performance
-var chProcessingStart time.Time
-
 // threadedRepairScan is a background thread that checks on the health of files,
 // tracking the least healthy files and queuing the worst ones for repair.
 //
