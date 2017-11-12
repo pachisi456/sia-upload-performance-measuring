@@ -146,7 +146,8 @@ func (r *Renter) managedFetchAndRepairChunk(chunk *unfinishedChunk) bool {
 	fmt.Println("> TWOFISH ENCRYPTION OF ALL PIECES OF A CHUNK TOOK", totalTwofishTime)
 
 	// measuring performance
-	fmt.Println("PROCESSING OF A CHUNK (REED-SOLOMON + TWOFISH) TOOK", time.Since(chProcessingStart))
+	chElapsed := time.Since(chProcessingStart)
+	fmt.Println("PROCESSING OF A CHUNK (REED-SOLOMON + TWOFISH) TOOK", chElapsed)
 	chProcessingStarted = false
 
 	// Return the released memory.
