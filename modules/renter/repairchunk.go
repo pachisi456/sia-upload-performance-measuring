@@ -110,7 +110,7 @@ func (r *Renter) managedFetchAndRepairChunk(chunk *unfinishedChunk) bool {
 
 	// measuring performance
 	rsElapsed := time.Since(chProcessingStart)
-	fmt.Println("> REED-SOLOMON ERASURE CODING OF A CHUNK TOOK", getGID(), rsElapsed)
+	fmt.Println("> REED-SOLOMON ERASURE CODING OF A CHUNK TOOK", rsElapsed, "THREAD ID:", getGID())
 
 	// Sanity check - we should have at least as many physical data pieces as we
 	// do elements in our piece usage.
@@ -146,11 +146,11 @@ func (r *Renter) managedFetchAndRepairChunk(chunk *unfinishedChunk) bool {
 	}
 
 	// measuring performance
-	fmt.Println("> TWOFISH ENCRYPTION OF ALL PIECES OF A CHUNK TOOK", totalTwofishTime)
+	fmt.Println("> TWOFISH ENCRYPTION OF ALL PIECES OF A CHUNK TOOK", totalTwofishTime, "THREAD ID:", getGID())
 
 	// measuring performance
 	chElapsed := time.Since(chProcessingStart)
-	fmt.Println("PROCESSING OF A CHUNK (REED-SOLOMON + TWOFISH) TOOK", chElapsed)
+	fmt.Println("PROCESSING OF A CHUNK (REED-SOLOMON + TWOFISH) TOOK", chElapsed, "THREAD ID:", getGID())
 
 	// Return the released memory.
 	r.managedMemoryAvailableAdd(memoryFreed)
