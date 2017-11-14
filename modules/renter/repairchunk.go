@@ -110,7 +110,7 @@ func (r *Renter) managedFetchAndRepairChunk(chunk *unfinishedChunk) bool {
 
 	// measuring performance
 	rsElapsed := time.Since(chProcessingStart)
-	fmt.Println("> REED-SOLOMON ERASURE CODING OF A CHUNK TOOK", rsElapsed, "THREAD ID:", getGID())
+	fmt.Println("> REED-SOLOMON ERASURE CODING OF A CHUNK TOOK", rsElapsed, "GOROUTINE ID:", getGID())
 
 	// Sanity check - we should have at least as many physical data pieces as we
 	// do elements in our piece usage.
@@ -146,11 +146,11 @@ func (r *Renter) managedFetchAndRepairChunk(chunk *unfinishedChunk) bool {
 	}
 
 	// measuring performance
-	fmt.Println("> TWOFISH ENCRYPTION OF ALL PIECES OF A CHUNK TOOK", totalTwofishTime, "THREAD ID:", getGID())
+	fmt.Println("> TWOFISH ENCRYPTION OF ALL PIECES OF A CHUNK TOOK", totalTwofishTime, "GOROUTINE ID:", getGID())
 
 	// measuring performance
 	chElapsed := time.Since(chProcessingStart)
-	fmt.Println("PROCESSING OF A CHUNK (REED-SOLOMON + TWOFISH) TOOK", chElapsed, "THREAD ID:", getGID())
+	fmt.Println("PROCESSING OF A CHUNK (REED-SOLOMON + TWOFISH) TOOK", chElapsed, "GOROUTINE ID:", getGID())
 
 	// Return the released memory.
 	r.managedMemoryAvailableAdd(memoryFreed)
@@ -242,6 +242,9 @@ func (r *Renter) managedReleaseIdleChunkPieces(uc *unfinishedChunk) {
 	}
 }
 
+// getGID() prints the goroutine ID, which is not actually supported natively by golang
+// however this can be used as a workaround, though not advisable to use for any more than debugging
+// source: https://blog.sgmansfield.com/2015/12/goroutine-ids/
 func getGID() uint64 {
 	b := make([]byte, 64)
 	b = b[:runtime.Stack(b, false)]
